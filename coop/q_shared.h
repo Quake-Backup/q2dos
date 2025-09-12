@@ -39,12 +39,19 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include <time.h>
 
 
-typedef unsigned char 		byte;
-#if defined(__cplusplus)
+typedef unsigned char		byte;
+/* some structures have qboolean members and the x86 asm code expect
+ * those members to be 4 bytes long.  i.e.: qboolean must be 32 bits.  */
 typedef int			qboolean;
+#undef true
+#undef false
+#if !defined(__cplusplus)
+#if defined __STDC_VERSION__ && (__STDC_VERSION__ >= 199901L)
+#include <stdbool.h>
 #else
-typedef enum {false, true}	qboolean;
+enum { false = 0, true  = 1 };
 #endif
+#endif				/* */
 
 #ifndef id386
 #define id386 0
