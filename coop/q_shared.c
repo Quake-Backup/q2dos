@@ -250,9 +250,13 @@ void R_ConcatTransforms (float in1[3][4], float in2[3][4], float out[3][4])
 
 float Q_fabs (float f)
 {
-	int tmp = *(int *) &f;
-	tmp &= 0x7FFFFFFF;
-	return *(float *) &tmp;
+	union {
+	    float f;
+	    int   i;
+	} u;
+	u.f = f;
+	u.i &= 0x7FFFFFFF;
+	return u.f;
 }
 
 #if defined(_MSC_VER) && defined(_M_IX86) && !defined(C_ONLY)
@@ -1437,11 +1441,8 @@ can mess up the server's parsing
 */
 qboolean Info_Validate (char *s)
 {
-	if(!s)
-	{
+	if (!s)
 		return false;
-	}
-
 	if (strchr (s, '\"'))
 		return false;
 	if (strchr (s, ';'))
