@@ -1107,8 +1107,16 @@ void R_Register ( void )
 	gl_monolightmap = ri.Cvar_Get( "gl_monolightmap", "0", 0 );
 #ifdef __DJGPP__ /* FS: Don't clash with win32's usage of opengl32 and mini drivers */
 	gl_driver = ri.Cvar_Get( "gl_dosdriver", "gl.dxe", CVAR_ARCHIVE);
-#else
+#elif defined(GLIMP_SDL) /* to load SDL's default opengl driver -- see qgl_linux.c */
+	gl_driver = ri.Cvar_Get( "gl_driver", "", CVAR_ARCHIVE );
+#elif defined(_WIN32)
 	gl_driver = ri.Cvar_Get( "gl_driver", "opengl32", CVAR_ARCHIVE );
+#elif defined(__APPLE__)
+	gl_driver = ri.Cvar_Get( "gl_driver", "/System/Library/Frameworks/OpenGL.framework/Libraries/libGL.dylib", CVAR_ARCHIVE );
+#elif defined(__NetBSD__)||defined(__OpenBSD__)||defined(__sgi__)
+	gl_driver = ri.Cvar_Get( "gl_driver", "libGL.so", CVAR_ARCHIVE );
+#else /* other unix */
+	gl_driver = ri.Cvar_Get( "gl_driver", "libGL.so.1", CVAR_ARCHIVE );
 #endif
 
 	gl_anisotropic = ri.Cvar_Get( "gl_anisotropic", "0", CVAR_ARCHIVE );
