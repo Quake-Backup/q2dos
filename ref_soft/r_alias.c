@@ -59,7 +59,10 @@ float	r_avertexnormals[NUMVERTEXNORMALS][3] = {
 };
 
 static void R_AliasTransformVector(vec3_t in, vec3_t out, float m[3][4]);
-/*static */void R_AliasTransformFinalVerts(int numpoints, finalvert_t *fv, dtrivertx_t *oldv, dtrivertx_t *newv);
+#if !id386
+static
+#endif
+void R_AliasTransformFinalVerts(int numpoints, finalvert_t *fv, dtrivertx_t *oldv, dtrivertx_t *newv);
 
 void R_AliasProjectAndClipTestFinalVert (finalvert_t *fv);
 
