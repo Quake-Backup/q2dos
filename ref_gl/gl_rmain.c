@@ -1378,10 +1378,10 @@ int R_Init ( void *hinstance, void *hWnd )
 	/* end Knigthmare */
 
 	strcpy( renderer_buffer, gl_config.renderer_string );
-	strlwr( renderer_buffer );
+	Q_strlwr( renderer_buffer );
 
 	strcpy( vendor_buffer, gl_config.vendor_string );
-	strlwr( vendor_buffer );
+	Q_strlwr( vendor_buffer );
 
 	/* Knightmare- replaced the vendor detection  */
 	if (!Q_strncasecmp(renderer_buffer, "3dfx", 4)	  ||
