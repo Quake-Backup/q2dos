@@ -12,7 +12,19 @@ eight_thousand_hex: .single	32768.0
 
 	.bss
 .lcomm  short_izi 1
+
 	.align 4
+
+#ifdef __ELF__
+.local	transformed_vec, local_vec, ebpsave, v, u, tmp, zi
+.comm	transformed_vec, 12, 4
+.comm	local_vec, 12, 4
+.comm	ebpsave, 1, 4
+.comm	v, 1, 4
+.comm	u, 1, 4
+.comm	tmp, 1, 4
+.comm	zi, 1, 4
+#else
 .lcomm	transformed_vec, 12, 4
 .lcomm	local_vec, 12, 4
 .lcomm	ebpsave, 1, 4
@@ -20,6 +32,7 @@ eight_thousand_hex: .single	32768.0
 .lcomm	u, 1, 4
 .lcomm	tmp, 1, 4
 .lcomm	zi, 1, 4
+#endif
 
 	.text
 #define PARTICLE_33	0
