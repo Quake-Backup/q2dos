@@ -1022,10 +1022,10 @@ Swap_Init
 */
 void Swap_Init (void)
 {
-	byte	swaptest[2] = {1,0};
+	int	i = 0x12345678;
 
 // set the byte swapping variables in a portable manner	
-	if ( *(short *)swaptest == 1)
+	if ( *(char *)&i == 0x78)	/* LITTLE_ENDIAN */
 	{
 		bigendien = false;
 		_BigShort = ShortSwap;
