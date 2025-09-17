@@ -27,8 +27,6 @@ viddef_t	vid;
 
 refimport_t	ri;
 
-int gl_texture0, gl_texture1;
-
 model_t		*r_worldmodel;
 
 float		gldepthmin, gldepthmax;
@@ -1544,32 +1542,6 @@ int R_Init ( void *hinstance, void *hWnd )
 		ri.Con_Printf( PRINT_ALL, "...GL_EXT_point_parameters not found\n" );
 	}
 
-#ifdef __linux__
-	// 3DFX_set_global_palette
-	if ( StringContainsToken( gl_config.extensions_string, "3DFX_set_global_palette" ))
-	{
-		if ( gl_ext_palettedtexture->value )
-		{
-			qgl3DfxSetPaletteEXT = ( void ( APIENTRY * ) (GLuint *) )qwglGetProcAddress( "gl3DfxSetPaletteEXT" );
-			if (qgl3DfxSetPaletteEXT) {
-				ri.Con_Printf( PRINT_ALL, "...using 3DFX_set_global_palette\n" );
-				qglColorTableEXT = Fake_glColorTableEXT;
-			}
-			else {
-				ri.Con_Printf( PRINT_ALL, "...failed loading 3DFX_set_global_palette\n" );
-			}
-		}
-		else
-		{
-			ri.Con_Printf( PRINT_ALL, "...ignoring 3DFX_set_global_palette\n" );
-		}
-	}
-	else
-	{
-		ri.Con_Printf( PRINT_ALL, "...3DFX_set_global_palette not found\n" );
-	}
-#endif
-
 #ifndef __DJGPP__ /* FS: Causes odd missing things on real hadrware && locks */
 	// GL_EXT_paletted_texture / GL_EXT_shared_texture_palette
 	if ( !qglColorTableEXT &&
@@ -1600,27 +1572,25 @@ int R_Init ( void *hinstance, void *hWnd )
 	{
 		if (gl_ext_multitexture->intValue)
 		{
-			qglMultiTexCoord2f = ( void * ) qwglGetProcAddress( "glMultiTexCoord2fARB" );
-			qglActiveTextureARB = ( void * ) qwglGetProcAddress( "glActiveTextureARB" );
-			qglClientActiveTextureARB = ( void * ) qwglGetProcAddress( "glClientActiveTextureARB" );
-			if (qglMultiTexCoord2f && qglActiveTextureARB && qglClientActiveTextureARB) {
+			qglMultiTexCoord2fARB = (void (APIENTRY *)(GLenum,GLfloat,GLfloat)) qwglGetProcAddress( "glMultiTexCoord2fARB" );
+			qglActiveTextureARB = (void (APIENTRY *)(GLenum)) qwglGetProcAddress( "glActiveTextureARB" );
+			qglClientActiveTextureARB = (void (APIENTRY *)(GLenum)) qwglGetProcAddress( "glClientActiveTextureARB" );
+			if (qglMultiTexCoord2fARB && qglActiveTextureARB && qglClientActiveTextureARB) {
 				qglGetIntegerv(GL_MAX_TEXTURE_UNITS_ARB, &gl_config.max_texunits);
 				if (gl_config.max_texunits > 1) {
-					gl_texture0 = GL_TEXTURE0_ARB;
-					gl_texture1 = GL_TEXTURE1_ARB;
 					gl_config.multitexture = true;
 					gl_state.multitextureEnabled = false;	/* Knightmare added */
 					ri.Con_Printf( PRINT_ALL, "...using GL_ARB_multitexture, %i TMUs\n", gl_config.max_texunits );
 				}
 				else {
-					qglMultiTexCoord2f = NULL;
+					qglMultiTexCoord2fARB = NULL;
 					qglActiveTextureARB = NULL;
 					qglClientActiveTextureARB = NULL;
 					ri.Con_Printf( PRINT_ALL, "...not using GL_ARB_multitexture, < 2 TMUs\n" );
 				}
 			}
 			else {
-				qglMultiTexCoord2f = NULL;
+				qglMultiTexCoord2fARB = NULL;
 				qglActiveTextureARB = NULL;
 				qglClientActiveTextureARB = NULL;
 				ri.Con_Printf( PRINT_ALL, "...failed loading GL_ARB_multitexture\n" );
@@ -1634,40 +1604,6 @@ int R_Init ( void *hinstance, void *hWnd )
 	else
 	{
 		ri.Con_Printf( PRINT_ALL, "...GL_ARB_multitexture not found\n" );
-	}
-
-	// GL_SGIS_multitexture
-	if ( StringContainsToken( gl_config.extensions_string, "GL_SGIS_multitexture" ) )
-	{
-		if ( qglActiveTextureARB )
-		{
-			ri.Con_Printf( PRINT_ALL, "...GL_SGIS_multitexture deprecated in favor of ARB_multitexture\n" );
-		}
-		else if (gl_ext_multitexture->intValue)
-		{
-			qglMultiTexCoord2f = ( void * ) qwglGetProcAddress( "glMTexCoord2fSGIS" );
-			qglSelectTextureSGIS = ( void * ) qwglGetProcAddress( "glSelectTextureSGIS" );
-			if (qglMultiTexCoord2f && qglSelectTextureSGIS) {
-				gl_texture0 = GL_TEXTURE0_SGIS;
-				gl_texture1 = GL_TEXTURE1_SGIS;
-				gl_config.multitexture = true;
-				gl_config.max_texunits = 2;
-				ri.Con_Printf( PRINT_ALL, "...using GL_SGIS_multitexture\n" );
-			}
-			else {
-				qglMultiTexCoord2f = NULL;
-				qglSelectTextureSGIS = NULL;
-				ri.Con_Printf( PRINT_ALL, "...failed loading GL_SGIS_multitexture\n" );
-			}
-		}
-		else
-		{
-			ri.Con_Printf( PRINT_ALL, "...ignoring GL_SGIS_multitexture\n" );
-		}
-	}
-	else
-	{
-		ri.Con_Printf( PRINT_ALL, "...GL_SGIS_multitexture not found\n" );
 	}
 
 	// GL_ARB_texture_non_power_of_two

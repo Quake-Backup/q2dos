@@ -73,19 +73,19 @@ void GL_EnableMultitexture( qboolean enable )
 
 	if ( enable )
 	{
-		GL_SelectTexture( gl_texture1 );
+		GL_SelectTexture( GL_TEXTURE1_ARB );
 		qglEnable( GL_TEXTURE_2D );
 		GL_TexEnv( GL_REPLACE );
 		gl_state.multitextureEnabled = true;	/* Knightmare added */
 	}
 	else
 	{
-		GL_SelectTexture( gl_texture1 );
+		GL_SelectTexture( GL_TEXTURE1_ARB );
 		qglDisable( GL_TEXTURE_2D );
 		GL_TexEnv( GL_REPLACE );
 		gl_state.multitextureEnabled = false;	/* Knightmare added */
 	}
-	GL_SelectTexture( gl_texture0 );
+	GL_SelectTexture( GL_TEXTURE0_ARB );
 	GL_TexEnv( GL_REPLACE );
 }
 
@@ -96,7 +96,7 @@ void GL_SelectTexture( GLenum texture )
 	if ( !gl_config.multitexture )
 		return;
 
-	if ( texture == gl_texture0 )
+	if ( texture == GL_TEXTURE0_ARB )
 	{
 		tmu = 0;
 	}
@@ -112,11 +112,7 @@ void GL_SelectTexture( GLenum texture )
 
 	gl_state.currenttmu = tmu;
 
-	if ( qglSelectTextureSGIS )
-	{
-		qglSelectTextureSGIS( texture );
-	}
-	else if ( qglActiveTextureARB )
+	if ( qglActiveTextureARB )
 	{
 		qglActiveTextureARB( texture );
 		qglClientActiveTextureARB( texture );
@@ -149,7 +145,7 @@ void GL_Bind (int texnum)
 void GL_MBind( GLenum target, int texnum )
 {
 	GL_SelectTexture( target );
-	if ( target == gl_texture0 )
+	if ( target == GL_TEXTURE0_ARB )
 	{
 		if ( gl_state.currenttextures[0] == texnum )
 			return;

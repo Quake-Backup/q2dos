@@ -8,7 +8,7 @@ of the License, or (at your option) any later version.
 
 This program is distributed in the hope that it will be useful,
 but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 
 See the GNU General Public License for more details.
 
@@ -379,11 +379,10 @@ void ( APIENTRY * qglUnlockArraysEXT) ( void );
 void ( APIENTRY * qglPointParameterfEXT)( GLenum param, GLfloat value );
 void ( APIENTRY * qglPointParameterfvEXT)( GLenum param, const GLfloat *value );
 void ( APIENTRY * qglColorTableEXT)( GLenum, GLenum, GLsizei, GLenum, GLenum, const GLvoid * );
-void ( APIENTRY * qglSelectTextureSGIS)( GLenum );
-//void ( APIENTRY * qglMTexCoord2fSGIS)( GLenum, GLfloat, GLfloat );
+
 void ( APIENTRY * qglActiveTextureARB) ( GLenum );
+void ( APIENTRY * qglMultiTexCoord2fARB)( GLenum, GLfloat, GLfloat );
 void ( APIENTRY * qglClientActiveTextureARB) ( GLenum );
-void ( APIENTRY * qglMultiTexCoord2f)( GLenum, GLfloat, GLfloat );
 
 static void ( APIENTRY * dllAccum )(GLenum op, GLfloat value);
 static void ( APIENTRY * dllAlphaFunc )(GLenum func, GLclampf ref);
@@ -1445,12 +1444,12 @@ static void APIENTRY logGetTexImage(GLenum target, GLint level, GLenum format, G
 	SIG( "glGetTexImage" );
 	dllGetTexImage( target, level, format, type, pixels );
 }
-
 static void APIENTRY logGetTexLevelParameterfv(GLenum target, GLint level, GLenum pname, GLfloat *params )
 {
 	SIG( "glGetTexLevelParameterfv" );
 	dllGetTexLevelParameterfv( target, level, pname, params );
 }
+
 static void APIENTRY logGetTexLevelParameteriv(GLenum target, GLint level, GLenum pname, GLint *params)
 {
 	SIG( "glGetTexLevelParameteriv" );
@@ -2985,14 +2984,14 @@ static void * QGL_dlsym (const char *sym) {
 /*
 ** QGL_Init
 **
-** This is responsible for binding our qgl function pointers to 
-** the appropriate GL stuff.  In Windows this means doing a 
+** This is responsible for binding our qgl function pointers to
+** the appropriate GL stuff.  In Windows this means doing a
 ** LoadLibrary and a bunch of calls to GetProcAddress.  On other
 ** operating systems we need to do the right thing, whatever that
 ** might be.
-** 
+**
 */
-qboolean QGL_Init( const char *dllname )
+qboolean QGL_Init(const char *dllname)
 {
 	int rc = -1;
 
@@ -3354,11 +3353,9 @@ qboolean QGL_Init( const char *dllname )
 	qglPointParameterfEXT = NULL;
 	qglPointParameterfvEXT = NULL;
 	qglColorTableEXT = NULL;
-	qglSelectTextureSGIS = NULL;
-//	qglMTexCoord2fSGIS = NULL;
 	qglActiveTextureARB = NULL;
+	qglMultiTexCoord2fARB = NULL;
 	qglClientActiveTextureARB = NULL;
-	qglMultiTexCoord2f = NULL;
 
 	return true;
 }
@@ -4062,9 +4059,7 @@ void GLimp_EnableLogging( qboolean enable )
 	}
 }
 
-
 void GLimp_LogNewFrame( void )
 {
 	fprintf( log_fp, "*** R_BeginFrame ***\n" );
 }
-

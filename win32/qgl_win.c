@@ -410,11 +410,9 @@ BOOL ( WINAPI * qwglChoosePixelFormatARB ) (HDC, CONST int*, CONST FLOAT*, UINT,
 void ( APIENTRY * qglPointParameterfEXT)( GLenum param, GLfloat value );
 void ( APIENTRY * qglPointParameterfvEXT)( GLenum param, const GLfloat *value );
 void ( APIENTRY * qglColorTableEXT)( GLenum, GLenum, GLsizei, GLenum, GLenum, const GLvoid * );
-void ( APIENTRY * qglSelectTextureSGIS)( GLenum );
-//void ( APIENTRY * qglMTexCoord2fSGIS)( GLenum, GLfloat, GLfloat );
 void ( APIENTRY * qglActiveTextureARB) ( GLenum );
+void ( APIENTRY * qglMultiTexCoord2fARB)( GLenum, GLfloat, GLfloat );
 void ( APIENTRY * qglClientActiveTextureARB) ( GLenum );
-void ( APIENTRY * qglMultiTexCoord2f)( GLenum, GLfloat, GLfloat );
 
 static void ( APIENTRY * dllAccum )(GLenum op, GLfloat value);
 static void ( APIENTRY * dllAlphaFunc )(GLenum func, GLclampf ref);
@@ -1476,12 +1474,12 @@ static void APIENTRY logGetTexImage(GLenum target, GLint level, GLenum format, G
 	SIG( "glGetTexImage" );
 	dllGetTexImage( target, level, format, type, pixels );
 }
-
 static void APIENTRY logGetTexLevelParameterfv(GLenum target, GLint level, GLenum pname, GLfloat *params )
 {
 	SIG( "glGetTexLevelParameterfv" );
 	dllGetTexLevelParameterfv( target, level, pname, params );
 }
+
 static void APIENTRY logGetTexLevelParameteriv(GLenum target, GLint level, GLenum pname, GLint *params)
 {
 	SIG( "glGetTexLevelParameteriv" );
@@ -3046,9 +3044,9 @@ qboolean QGL_Init( const char *dllname )
 
 		g = 2.00 * ( 0.8 - ( vid_gamma->value - 0.5 ) ) + 1.0F;
 		Com_sprintf( envbuffer, sizeof(envbuffer), "SSTV2_GAMMA=%f", g );
-		putenv( envbuffer );
+		_putenv( envbuffer );
 		Com_sprintf( envbuffer, sizeof(envbuffer), "SST_GAMMA=%f", g );
-		putenv( envbuffer );
+		_putenv( envbuffer );
 	}
 
 	if ((glw_state.hinstOpenGL = LoadLibrary(dllname)) == NULL)
@@ -3422,17 +3420,16 @@ qboolean QGL_Init( const char *dllname )
 	qwglSetPixelFormat           = GPA( wglSetPixelFormat );
 	qwglSwapBuffers              = GPA( wglSwapBuffers );
 
+	qwglSwapIntervalEXT = NULL;
+
 	qglLockArraysEXT = NULL;
 	qglUnlockArraysEXT = NULL;
-	qwglSwapIntervalEXT = NULL;
 	qglPointParameterfEXT = NULL;
 	qglPointParameterfvEXT = NULL;
 	qglColorTableEXT = NULL;
-	qglSelectTextureSGIS = NULL;
-//	qglMTexCoord2fSGIS = NULL;
 	qglActiveTextureARB = NULL;
+	qglMultiTexCoord2fARB = NULL;
 	qglClientActiveTextureARB = NULL;
-	qglMultiTexCoord2f = NULL;
 
 	return true;
 }
@@ -4134,7 +4131,6 @@ void GLimp_EnableLogging( qboolean enable )
 	}
 }
 
-
 void GLimp_LogNewFrame( void )
 {
 	fprintf( glw_state.log_fp, "*** R_BeginFrame ***\n" );
@@ -4143,5 +4139,3 @@ void GLimp_LogNewFrame( void )
 #ifdef _MSC_VER
 #pragma warning (default : 4113 4133 4047 )
 #endif
-
-

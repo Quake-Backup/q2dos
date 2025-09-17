@@ -331,10 +331,10 @@ void R_DrawTriangleOutlines (msurface_t *surf, qboolean multitexture, qboolean a
 			GL_TexEnv (GL_REPLACE);
 		}
 		else if (multitexture) {
-			GL_SelectTexture (gl_texture0);
+			GL_SelectTexture (GL_TEXTURE0_ARB);
 			qglGetTexEnvfv(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, &tex_state0);
 
-			GL_SelectTexture (gl_texture1);
+			GL_SelectTexture (GL_TEXTURE1_ARB);
 			qglGetTexEnvfv(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, &tex_state1);
 
 			GL_EnableMultitexture(false);
@@ -364,10 +364,10 @@ void R_DrawTriangleOutlines (msurface_t *surf, qboolean multitexture, qboolean a
 		else if (multitexture) {
 			GL_EnableMultitexture(true);
         
-			GL_SelectTexture (gl_texture0);
+			GL_SelectTexture (GL_TEXTURE0_ARB);
 			GL_TexEnv (tex_state0);
 
-			GL_SelectTexture (gl_texture1);
+			GL_SelectTexture (GL_TEXTURE1_ARB);
 			GL_TexEnv (tex_state1);
 		}
     }
@@ -812,9 +812,9 @@ void R_DrawTextureChains (void)
 	{	/* Knightmare- draw lightmapped surfs here */
 		GL_EnableMultitexture (true);
 
-		GL_SelectTexture( gl_texture0);
+		GL_SelectTexture( GL_TEXTURE0_ARB);
 		GL_TexEnv (GL_REPLACE);
-		GL_SelectTexture( gl_texture1);
+		GL_SelectTexture( GL_TEXTURE1_ARB);
 		if (gl_lightmap->intValue)
 			GL_TexEnv (GL_REPLACE);
 		else 
@@ -877,7 +877,7 @@ void R_UpdateSurfaceLightmap (msurface_t *surf)
 	int			map, smax, tmax;
 	qboolean	is_dynamic = false;
 
-	if ( !qglMultiTexCoord2f || (r_fullbright->intValue != 0) )
+	if ( !qglMultiTexCoord2fARB || (r_fullbright->intValue != 0) )
 		return;
 	if ( surf->texinfo->flags & (SURF_SKY|SURF_WARP) )
 		return;
@@ -948,7 +948,7 @@ void R_RebuildLightmaps (void)
 
 		if ( !gl_config.newTexFormat )
 		{	// update full width of lm texture, because glPixelStorei isn't supported
-			GL_MBind( gl_texture1, gl_state.lightmap_textures + i );
+			GL_MBind( GL_TEXTURE1_ARB, gl_state.lightmap_textures + i );
 			qglTexSubImage2D (GL_TEXTURE_2D, 0,
 					0, gl_lms.lightrect[i].top, 
 					LM_BLOCK_WIDTH, (gl_lms.lightrect[i].bottom - gl_lms.lightrect[i].top), 
@@ -961,7 +961,7 @@ void R_RebuildLightmaps (void)
 				qglPixelStorei (GL_UNPACK_ROW_LENGTH, LM_BLOCK_WIDTH);
 				storeSet = true;
 			}
-			GL_MBind( gl_texture1, gl_state.lightmap_textures + i );
+			GL_MBind( GL_TEXTURE1_ARB, gl_state.lightmap_textures + i );
 			qglTexSubImage2D (GL_TEXTURE_2D, 0,
 							gl_lms.lightrect[i].left, gl_lms.lightrect[i].top,
 							(gl_lms.lightrect[i].right - gl_lms.lightrect[i].left), (gl_lms.lightrect[i].bottom - gl_lms.lightrect[i].top),
@@ -1023,12 +1023,12 @@ dynamic:
 		if ( ( surf->styles[map] >= 32 || surf->styles[map] == 0 ) && ( surf->dlightframe != r_framecount ) )
 		{
 			R_SetCacheState( surf );
-			GL_MBind( gl_texture1, gl_state.lightmap_textures + surf->lightmaptexturenum );
+			GL_MBind( GL_TEXTURE1_ARB, gl_state.lightmap_textures + surf->lightmaptexturenum );
 			lmtex = surf->lightmaptexturenum;
 		}
 		else
 		{
-			GL_MBind( gl_texture1, gl_state.lightmap_textures + 0 );
+			GL_MBind( GL_TEXTURE1_ARB, gl_state.lightmap_textures + 0 );
 			lmtex = 0;
 		}
 
@@ -1048,8 +1048,8 @@ dynamic:
 	if (surf->texinfo->flags & SURF_ALPHATEST)
 		qglEnable (GL_ALPHA_TEST);
 
-	GL_MBind( gl_texture0, image->texnum );
-	GL_MBind( gl_texture1, gl_state.lightmap_textures + lmtex );
+	GL_MBind( GL_TEXTURE0_ARB, image->texnum );
+	GL_MBind( GL_TEXTURE1_ARB, gl_state.lightmap_textures + lmtex );
 
 	if (surf->texinfo->flags & SURF_FLOWING)
 	{
@@ -1066,8 +1066,8 @@ dynamic:
 		qglBegin (GL_POLYGON);
 		for (i=0 ; i< nv; i++, v+= VERTEXSIZE)
 		{
-			qglMultiTexCoord2f (gl_texture0, (v[3]+scroll), v[4]);
-			qglMultiTexCoord2f (gl_texture1, v[5], v[6]);
+			qglMultiTexCoord2fARB (GL_TEXTURE0_ARB, (v[3]+scroll), v[4]);
+			qglMultiTexCoord2fARB (GL_TEXTURE1_ARB, v[5], v[6]);
 			qglVertex3fv (v);
 		}
 		qglEnd ();
@@ -1285,9 +1285,9 @@ void R_DrawBrushModel (entity_t *e)
 
 #if 0	/* Knightmare- removed this */
 	GL_EnableMultitexture (true);
-	GL_SelectTexture (gl_texture0);
+	GL_SelectTexture (GL_TEXTURE0_ARB);
 	GL_TexEnv (GL_REPLACE);
-	GL_SelectTexture (gl_texture1);
+	GL_SelectTexture (GL_TEXTURE1_ARB);
 	if (gl_lightmap->value)	/* Knightmare- show lightmaps on bmodels, too */
 		GL_TexEnv (GL_REPLACE);
 	else 
@@ -1486,9 +1486,9 @@ void R_DrawWorld (void)
 	{
 		GL_EnableMultitexture( true );
 
-		GL_SelectTexture (gl_texture0);
+		GL_SelectTexture (GL_TEXTURE0_ARB);
 		GL_TexEnv (GL_REPLACE);
-		GL_SelectTexture (gl_texture1);
+		GL_SelectTexture (GL_TEXTURE1_ARB);
 		if (gl_lightmap->value)
 			GL_TexEnv (GL_REPLACE);
 		else 
@@ -1877,7 +1877,7 @@ void GL_BeginBuildingLightmaps (model_t *m)
 	r_framecount = 1;		// no dlightcache
 
 	GL_EnableMultitexture( true );
-	GL_SelectTexture( gl_texture1);
+	GL_SelectTexture( GL_TEXTURE1_ARB );
 
 	/*
 	** setup the base lightstyles so the lightmaps won't have to be regenerated
