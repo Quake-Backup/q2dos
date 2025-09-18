@@ -58,6 +58,8 @@
 // !!! must be kept the same as in ref.h !!!
 #define ENTITY_FLAGS		68
 
+// old as from Apple cctools does not recognize .extern
+#ifndef __APPLE__
 #ifndef GLQUAKE
 	.extern C(d_zistepu)
 	.extern C(d_pzbuffer)
@@ -313,6 +315,7 @@
 	.extern C(vup)
 	.extern C(vpn)
 	.extern C(BOPS_Error)
+#endif
 
 //
 // !!! note that this file must match the corresponding C structures at all

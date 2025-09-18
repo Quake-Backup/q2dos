@@ -39,7 +39,10 @@ aff8entryvec_table:	.long	LDraw8, LDraw7, LDraw6, LDraw5
 
 lzistepx:		.long	0
 
+// old as from Apple cctools does not recognize .extern
+#ifndef __APPLE__
 .extern C(alias_colormap)
+#endif
 
 	.text
 

@@ -10,6 +10,18 @@
 	.data
 eight_thousand_hex: .single	32768.0
 
+// old as from Apple cctools has no knowledge of '.bss'
+#ifdef __APPLE__
+.zerofill	__DATA,__bss,short_izi, 1, 4
+.zerofill	__DATA,__bss,transformed_vec, 12, 4
+.zerofill	__DATA,__bss,local_vec, 12, 4
+.zerofill	__DATA,__bss,ebpsave, 1, 4
+.zerofill	__DATA,__bss,v, 1, 4
+.zerofill	__DATA,__bss,u, 1, 4
+.zerofill	__DATA,__bss,tmp, 1, 4
+.zerofill	__DATA,__bss,zi, 1, 4
+
+#else
 	.bss
 .lcomm	short_izi, 1
 
@@ -32,6 +44,7 @@ eight_thousand_hex: .single	32768.0
 .lcomm	u, 1, 4
 .lcomm	tmp, 1, 4
 .lcomm	zi, 1, 4
+#endif
 #endif
 
 	.text
