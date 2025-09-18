@@ -1300,6 +1300,7 @@ int R_Init ( void *hinstance, void *hWnd )
 	char vendor_buffer[1000];
 	int		err;
 	int		j;
+	GLint		value = 0;
 	extern float r_turbsin[256];
 
 	for ( j = 0; j < 256; j++ )
@@ -1353,7 +1354,8 @@ int R_Init ( void *hinstance, void *hWnd )
 	ri.Con_Printf (PRINT_ALL, "GL_VERSION: %s\n", gl_config.version_string );
 
 	/* Knighmare- added max texture size */
-	qglGetIntegerv(GL_MAX_TEXTURE_SIZE,&gl_config.max_texsize);
+	qglGetIntegerv(GL_MAX_TEXTURE_SIZE,&value);
+	gl_config.max_texsize = value;
 	ri.Con_Printf (PRINT_DEVELOPER, "GL_MAX_TEXTURE_SIZE: %i\n", gl_config.max_texsize ); /* Knightmare- changed to PRINT_DEVELOPER */
 	if (gl_config.max_texsize <= 0)	// catch if driver doesn't have this
 		gl_config.max_texsize = 256;
@@ -1584,7 +1586,9 @@ int R_Init ( void *hinstance, void *hWnd )
 			qglActiveTextureARB = (void (APIENTRY *)(GLenum)) qwglGetProcAddress( "glActiveTextureARB" );
 			qglClientActiveTextureARB = (void (APIENTRY *)(GLenum)) qwglGetProcAddress( "glClientActiveTextureARB" );
 			if (qglMultiTexCoord2fARB && qglActiveTextureARB && qglClientActiveTextureARB) {
-				qglGetIntegerv(GL_MAX_TEXTURE_UNITS_ARB, &gl_config.max_texunits);
+				value = 0;
+				qglGetIntegerv(GL_MAX_TEXTURE_UNITS_ARB, &value);
+				gl_config.max_texunits = value;
 				if (gl_config.max_texunits > 1) {
 					gl_config.multitexture = true;
 					gl_state.multitextureEnabled = false;	/* Knightmare added */

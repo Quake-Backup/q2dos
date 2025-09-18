@@ -24,8 +24,13 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #include <stdio.h>
 
+#ifdef __APPLE__
+#include <OpenGL/gl.h>
+#include <OpenGL/glext.h>
+#else
 #include <GL/gl.h>
 #include <GL/glext.h>
+#endif
 #include <math.h>
 
 #ifndef __linux__
