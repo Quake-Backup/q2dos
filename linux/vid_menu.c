@@ -11,30 +11,8 @@ are present on this system
 ====================================================================
 */
 
-/* this will have to be updated if ref's are added/removed from ref_t */
-#define NUMBER_OF_REFS 2
-
-/* all the refs should be initially set to 0 */
-static char *refs[NUMBER_OF_REFS+1] = { 0 };
-
-/* make all these have illegal values, as they will be redefined */
-static int REF_SOFT    = NUMBER_OF_REFS;
-static int REF_GL      = NUMBER_OF_REFS;
-
-static int GL_REF_START = NUMBER_OF_REFS;
-
-typedef struct
-{
-	char menuname[32];
-	char realname[32];
-	int  *pointer;
-} ref_t;
-
-static const ref_t possible_refs[NUMBER_OF_REFS] =
-{
-	{ "[software      ]", "soft",    &REF_SOFT    },
-	{ "[OpenGL        ]", "gl",      &REF_GL      },
-};
+#define REF_SOFT	0
+#define REF_GL		1
 
 #if defined(SDL_CLIENT) /* to load SDL's default opengl driver -- see qgl_linux.c */
 #define DEFAULT_LIBGL ""
@@ -104,7 +82,7 @@ static void DriverCallback( void *unused )
 {
 	s_ref_list[!s_current_menu_index].curvalue = s_ref_list[s_current_menu_index].curvalue;
 
-	if ( s_ref_list[s_current_menu_index].curvalue < GL_REF_START )
+	if ( s_ref_list[s_current_menu_index].curvalue < 1 )
 	{
 		s_current_menu = &s_software_menu;
 		s_current_menu_index = 0;
@@ -170,7 +148,6 @@ static void ResetDefaults( void *unused )
 static void ApplyChanges( void *unused )
 {
 	float gamma;
-	int ref;
 
 	/*
 	** make values consistent
@@ -213,21 +190,17 @@ static void ApplyChanges( void *unused )
 		case 0: Cvar_SetValue ("gl_anisotropic", 0.0); break;
 	}
 
-	/*
-	** must use an if here (instead of a switch), since the REF_'s are now variables
-	** and not #DEFINE's (constants)
-	*/
-	ref = s_ref_list[s_current_menu_index].curvalue;
-	if ( ref == REF_SOFT )
+	switch ( s_ref_list[s_current_menu_index].curvalue )
 	{
+	case REF_SOFT:
 		Cvar_Set( "vid_ref", "soft" );
-	}
-	else if ( ref == REF_GL )
-	{
+		break;
+	case REF_GL:
 		Cvar_Set( "vid_ref", "gl" );
 		Cvar_Get( "gl_driver", DEFAULT_LIBGL, 0 );
 		if (gl_driver->modified)
 			vid_ref->modified = true;
+		break;
 	}
 
 	M_ForceMenuOff();
@@ -323,8 +296,6 @@ float GetAnisoCurValue ()
 */
 void VID_MenuInit( void )
 {
-	int i, counter;
-
 	static const char *resolutions[] = 
 	{
 		"[320 240  ]",
@@ -349,6 +320,12 @@ void VID_MenuInit( void )
  		"[1920 1200]",
 		NULL
 	};
+	static const char *refs[] =
+	{
+		"[software       ]",
+		"[OpenGL         ]",
+		NULL
+	};
 	static const char *yesno_names[] =
 	{
 		"no",
@@ -363,39 +340,7 @@ void VID_MenuInit( void )
 		"trilinear",
 		NULL
 	};
-
-	/* make sure these are invalided before showing the menu again */
-	REF_SOFT    = NUMBER_OF_REFS;
-	REF_GL      = NUMBER_OF_REFS;
-
-	GL_REF_START = NUMBER_OF_REFS;
-
-	/* now test to see which ref's are present */
-	i = counter = 0;
-	while ( i < NUMBER_OF_REFS )
-	{
-		if ( VID_CheckRefExists( possible_refs[i].realname ) )
-		{
-			*(possible_refs[i].pointer) = counter;
-
-			/* free any previous string */
-			if ( refs[i] )
-				free ( refs[i] );
-			refs[counter] = strdup(possible_refs[i].menuname);
-
-			/*
-			** if we reach the 3rd item in the list, this indicates that a
-			** GL ref has been found; this will change if more software
-			** modes are added to the possible_ref's array
-			*/
-			if ( i == 3 )
-				GL_REF_START = counter;
-
-			counter++;
-		}
-		i++;
-	}
-	refs[counter] = NULL;
+	int i;
 
 	if ( !gl_driver )
 		gl_driver = Cvar_Get( "gl_driver", DEFAULT_LIBGL, 0 );
@@ -446,7 +391,7 @@ void VID_MenuInit( void )
 		s_ref_list[i].generic.x = 0;
 		s_ref_list[i].generic.y = 0;
 		s_ref_list[i].generic.callback = DriverCallback;
-		s_ref_list[i].itemnames = (const char **) refs;
+		s_ref_list[i].itemnames = refs;
 
 		s_mode_list[i].generic.type = MTYPE_SPINCONTROL;
 		s_mode_list[i].generic.name = "video mode";
@@ -584,22 +529,6 @@ void VID_MenuInit( void )
 	Menu_Center( &s_opengl_menu );
 	s_opengl_menu.x -= 8;
 	s_software_menu.x -= 8;
-}
-
-/*
-================
-VID_MenuShutdown
-================
-*/
-void VID_MenuShutdown( void )
-{
-	int i;
-
-	for ( i = 0; i < NUMBER_OF_REFS; i++ )
-	{
-		if ( refs[i] )
-			free ( refs[i] );
-	}
 }
 
 /*
