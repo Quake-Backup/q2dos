@@ -23,8 +23,8 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #ifdef USE_CURL
 
-#if (LIBCURL_VERSION_NUM >= 0x071506) && !defined(CURLOPT_ENCODING)
-#define CURLOPT_ENCODING CURLOPT_ACCEPT_ENCODING
+#if (LIBCURL_VERSION_NUM < 0x071506)
+#define CURLOPT_ACCEPT_ENCODING CURLOPT_ENCODING
 #endif
 
 cvar_t	*cl_http_downloads;
@@ -333,7 +333,7 @@ static void CL_StartHTTPDownload (dlqueue_t *entry, dlhandle_t *dl)
 
 	Com_sprintf (dl->URL, sizeof(dl->URL), "%s%s", cls.downloadServer, escapedFilePath);
 
-	curl_easy_setopt (dl->curl, CURLOPT_ENCODING, "");
+	curl_easy_setopt (dl->curl, CURLOPT_ACCEPT_ENCODING, "");
 	//curl_easy_setopt (dl->curl, CURLOPT_DEBUGFUNCTION, CL_CURL_Debug);
 	//curl_easy_setopt (dl->curl, CURLOPT_VERBOSE, 1);
 	curl_easy_setopt (dl->curl, CURLOPT_NOPROGRESS, 0);
@@ -349,7 +349,7 @@ static void CL_StartHTTPDownload (dlqueue_t *entry, dlhandle_t *dl)
 	curl_easy_setopt (dl->curl, CURLOPT_PROXY, cl_http_proxy->string);
 	curl_easy_setopt (dl->curl, CURLOPT_FOLLOWLOCATION, 1);
 	curl_easy_setopt (dl->curl, CURLOPT_MAXREDIRS, 5);
-	curl_easy_setopt (dl->curl, CURLOPT_WRITEHEADER, dl);
+	curl_easy_setopt (dl->curl, CURLOPT_HEADERDATA, dl);
 	curl_easy_setopt (dl->curl, CURLOPT_HEADERFUNCTION, CL_HTTP_Header);
 	curl_easy_setopt (dl->curl, CURLOPT_PROGRESSFUNCTION, CL_HTTP_Progress);
 	curl_easy_setopt (dl->curl, CURLOPT_PROGRESSDATA, dl);
