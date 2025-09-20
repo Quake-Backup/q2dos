@@ -38,7 +38,7 @@ DIRECT LINK GLUE
 
 #define	MAXPRINTMSG	4096
 void __attribute__((__format__(__printf__,2,3)))
-VID_Printf (int print_level, char *fmt, ...)
+VID_Printf (int print_level, const char *fmt, ...)
 {
         va_list		argptr;
         char		msg[MAXPRINTMSG];
@@ -55,7 +55,7 @@ VID_Printf (int print_level, char *fmt, ...)
 }
 
 void __attribute__((__noreturn__, __format__(__printf__,2,3)))
-VID_Error (int err_level, char *fmt, ...)
+VID_Error (int err_level, const char *fmt, ...)
 {
         va_list		argptr;
         char		msg[MAXPRINTMSG];
