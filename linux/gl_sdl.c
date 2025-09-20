@@ -70,7 +70,7 @@ glwstate_t glw_state;
 /* Gamma stuff */
 
 #define GAMMA_MAX 3.0
-#define USE_GAMMA_RAMPS 1 /* 0: use SDL_SetGamma & co. 1: use GammaRamp funcs. */
+#define USE_GAMMA_RAMPS 1 /* 0: use SetGamma & co. 1: use GammaRamp funcs. */
 
 #if (USE_GAMMA_RAMPS)
 static Uint16 org_gammaRamp[3][256];

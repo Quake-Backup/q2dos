@@ -190,7 +190,7 @@ void CDAudio_Resume(void)
 
 static void CD_f (void)
 {
-	char	*command;
+	const char	*command;
 	int		ret, n;
 
 	if (Cmd_Argc() < 2)
@@ -382,7 +382,7 @@ void CDAudio_Update(void)
 	}
 }
 
-static char *get_cddev_arg (char *arg)
+static const char *get_cddev_arg (const char *arg)
 {
 #if defined(_WIN32)
 /* arg should be like "D:\", make sure it is so,
@@ -472,7 +472,7 @@ int CDAudio_Init(void)
 
 	if (cd_dev->string[0] != '\0')
 	{
-		char *userdev = get_cddev_arg(cd_dev->string);
+		const char *userdev = get_cddev_arg(cd_dev->string);
 		if (!userdev)
 		{
 			Com_Printf("Invalid cd_dev value\n");

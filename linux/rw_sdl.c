@@ -67,6 +67,7 @@ static int sdl_palettemode = SDL_LOGPAL;
 
 #include "icon_sdl.h"
 
+
 /*
 ** SWimp_Init
 **

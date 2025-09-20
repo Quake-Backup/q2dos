@@ -45,7 +45,6 @@ static cvar_t *_windowed_mouse;
 
 extern void M_ForceMenuOff( void );
 extern const char *Default_MenuKey( menuframework_s *m, int key );
-extern qboolean VID_CheckRefExists( const char *name );
 
 /*
 ====================================================================
