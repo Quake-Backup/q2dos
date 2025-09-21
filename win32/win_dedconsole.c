@@ -169,47 +169,48 @@ void Sys_Error (const char *error, ...)
 		Q_vsnprintf(string, sizeof(string), error, argPtr);
 		Com_Printf("*** ERROR *** %s\n", string);
 		Com_Quit();
-		return;
 	}
-
-	// Make sure all subsystems are down
-	CL_Shutdown ();
-	Qcommon_Shutdown();
-
-	va_start(argPtr, error);
-	Q_vsnprintf (string, sizeof(string), error, argPtr);
-	va_end(argPtr);
-
-	// Echo to console
-	Sys_ConsoleOutput("\n");
-	Sys_ConsoleOutput(string);
-	Sys_ConsoleOutput("\n");
-
-	// Display the message and set a timer so we can flash the text
-	SetWindowText(sys_console.hWndMsg, string);
-	SetTimer(sys_console.hWnd, 1, 1000, NULL);
-
-	sys_console.timerActive = true;
-
-	// Show/hide everything we need
-	ShowWindow(sys_console.hWndMsg, SW_SHOW);
-	ShowWindow(sys_console.hWndInput, SW_HIDE);
-
-	Sys_ShowConsole(true);
-
-	// Wait for the user to quit
-	while (1)
+	else
 	{
-		while (PeekMessage(&msg, NULL, 0, 0, PM_NOREMOVE))
-		{
-			if (!GetMessage(&msg, NULL, 0, 0))
-				Sys_Quit();
+		// Make sure all subsystems are down
+		CL_Shutdown ();
+		Qcommon_Shutdown();
 
-			TranslateMessage(&msg);
-			DispatchMessage(&msg);
+		va_start(argPtr, error);
+		Q_vsnprintf (string, sizeof(string), error, argPtr);
+		va_end(argPtr);
+
+		// Echo to console
+		Sys_ConsoleOutput("\n");
+		Sys_ConsoleOutput(string);
+		Sys_ConsoleOutput("\n");
+
+		// Display the message and set a timer so we can flash the text
+		SetWindowText(sys_console.hWndMsg, string);
+		SetTimer(sys_console.hWnd, 1, 1000, NULL);
+
+		sys_console.timerActive = true;
+
+		// Show/hide everything we need
+		ShowWindow(sys_console.hWndMsg, SW_SHOW);
+		ShowWindow(sys_console.hWndInput, SW_HIDE);
+
+		Sys_ShowConsole(true);
+
+		// Wait for the user to quit
+		while (1)
+		{
+			while (PeekMessage(&msg, NULL, 0, 0, PM_NOREMOVE))
+			{
+				if (!GetMessage(&msg, NULL, 0, 0))
+					Sys_Quit();
+
+				TranslateMessage(&msg);
+				DispatchMessage(&msg);
+			}
+			// Don't hog the CPU
+			Sleep(25);
 		}
-		// Don't hog the CPU
-		Sleep(25);
 	}
 }
 
