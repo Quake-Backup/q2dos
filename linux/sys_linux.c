@@ -188,7 +188,7 @@ void	*Sys_GetGameAPI (void *parms)
 	return GetGameAPI (parms);
 }
 #else
-static void (*game_library)(void);
+static void *game_library;
 
 void Sys_UnloadGame (void)
 {
@@ -250,7 +250,7 @@ void Sys_UnloadGameSpy(void)
 {
 }
 #else /* dynamic linking */
-static void (*gamespy_library)(void);
+static void *gamespy_library;
 
 void *Sys_GetGameSpyAPI(void *parms)
 {

@@ -300,7 +300,7 @@ int Sys_dlclose (void *handle)
 }
 
 #ifndef GAME_HARD_LINKED
-static void (*game_library)(void);
+static void *game_library;
 
 void Sys_UnloadGame (void)
 {
@@ -350,7 +350,7 @@ void *Sys_GetGameAPI (void *parms)
 #endif /* GAME_HARD_LINKED */
 
 #if defined(GAMESPY) && !defined(GAMESPY_HARD_LINKED)
-static void (*gamespy_library)(void);
+static void *gamespy_library;
 
 void *Sys_GetGameSpyAPI(void *parms)
 {
