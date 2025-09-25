@@ -51,7 +51,7 @@ XVisualInfo * (*qglXChooseVisual)( Display *dpy, int screen, int *attribList );
 GLXContext (*qglXCreateContext)( Display *dpy, XVisualInfo *vis, GLXContext shareList, Bool direct );
 void (*qglXDestroyContext)( Display *dpy, GLXContext ctx );
 Bool (*qglXMakeCurrent)( Display *dpy, GLXDrawable drawable, GLXContext ctx);
-void (*qglXCopyContext)( Display *dpy, GLXContext src, GLXContext dst, GLuint mask );
+void (*qglXCopyContext)( Display *dpy, GLXContext src, GLXContext dst, unsigned long mask );
 void (*qglXSwapBuffers)( Display *dpy, GLXDrawable drawable );
 #endif
 
