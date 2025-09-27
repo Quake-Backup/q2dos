@@ -465,7 +465,7 @@ void Sys_InitDedConsole (void)
 
 	if (!RegisterClassEx(&wc))
 	{
-		MessageBox(NULL, "Could not register console window class", "ERROR", MB_OK | MB_ICONERROR | MB_TASKMODAL);
+		MessageBoxA(NULL, "Could not register console window class", "ERROR", MB_OK | MB_ICONERROR | MB_TASKMODAL);
 		exit(0);
 	}
 
@@ -474,7 +474,7 @@ void Sys_InitDedConsole (void)
 	{
 		UnregisterClass(CONSOLE_WINDOW_CLASS_NAME, global_hInstance);
 
-		MessageBox(NULL, "Could not create console window", "ERROR", MB_OK | MB_ICONERROR | MB_TASKMODAL);
+		MessageBoxA(NULL, "Could not create console window", "ERROR", MB_OK | MB_ICONERROR | MB_TASKMODAL);
 		exit(0);
 	}
 

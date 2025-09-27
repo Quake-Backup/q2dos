@@ -47,7 +47,7 @@ qboolean DDRAW_Init( unsigned char **ppbuffer, int *ppitch )
 	int i;
 	extern cvar_t *sw_allow_modex;
 
-	HRESULT (WINAPI *QDirectDrawCreate)( GUID FAR *lpGUID, LPDIRECTDRAW FAR * lplpDDRAW, IUnknown FAR * pUnkOuter );
+	HRESULT (WINAPI *QDirectDrawCreate)(GUID FAR *, LPDIRECTDRAW FAR *, IUnknown FAR *);
 
 	ri.Con_Printf( PRINT_ALL, "Initializing DirectDraw\n");
 
@@ -64,7 +64,7 @@ qboolean DDRAW_Init( unsigned char **ppbuffer, int *ppitch )
 	if ( !sww_state.hinstDDRAW )
 	{
 		ri.Con_Printf( PRINT_ALL, "...loading DDRAW.DLL: ");
-		if ( ( sww_state.hinstDDRAW = LoadLibrary( "ddraw.dll" ) ) == NULL )
+		if ( ( sww_state.hinstDDRAW = LoadLibraryA( "ddraw.dll" ) ) == NULL )
 		{
 			ri.Con_Printf( PRINT_ALL, "failed\n" );
 			goto fail;
@@ -72,7 +72,7 @@ qboolean DDRAW_Init( unsigned char **ppbuffer, int *ppitch )
 		ri.Con_Printf( PRINT_ALL, "ok\n" );
 	}
 
-	if ( ( QDirectDrawCreate = ( HRESULT (WINAPI *)( GUID FAR *, LPDIRECTDRAW FAR *, IUnknown FAR * ) ) GetProcAddress( sww_state.hinstDDRAW, "DirectDrawCreate" ) ) == NULL )
+	if ( (QDirectDrawCreate = (HRESULT (WINAPI *)(GUID FAR *, LPDIRECTDRAW FAR *, IUnknown FAR *)) GetProcAddress(sww_state.hinstDDRAW, "DirectDrawCreate" )) == NULL )
 	{
 		ri.Con_Printf( PRINT_ALL, "*** DirectDrawCreate == NULL ***\n" );
 		goto fail;

@@ -385,7 +385,7 @@ sndinitstat SNDDMA_InitDirect (void)
 	{
 		Com_DPrintf(DEVELOPER_MSG_SOUND, "...loading dsound.dll: ");
 
-		hInstDS = LoadLibrary("dsound.dll");
+		hInstDS = LoadLibraryA("dsound.dll");
 		
 		if (hInstDS == NULL)
 		{
@@ -411,7 +411,7 @@ sndinitstat SNDDMA_InitDirect (void)
 			return SIS_FAILURE;
 		}
 
-		if (MessageBox (NULL,
+		if (MessageBoxA(NULL,
 		                "The sound hardware is in use by another app.\n\n"
 		                "Select Retry to try to start sound again or Cancel to run Quake 2 with no sound.",
 		                "Sound not available",
@@ -507,7 +507,7 @@ qboolean SNDDMA_InitWav (void)
 			return false;
 		}
 
-		if (MessageBox (NULL,
+		if (MessageBoxA(NULL,
 		                "The sound hardware is in use by another app.\n\n"
 		                "Select Retry to try to start sound again or Cancel to run Quake 2 with no sound.",
 		                "Sound not available",

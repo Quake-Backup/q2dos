@@ -47,7 +47,7 @@ void *Hunk_Begin (int maxsize)
 #ifdef VIRTUAL_ALLOC
 	membase = (byte *)VirtualAlloc (NULL, maxsize, MEM_RESERVE, PAGE_NOACCESS);
 #else
-	membase = malloc (maxsize);
+	membase = (byte *)malloc (maxsize);
 	memset (membase, 0, maxsize);
 #endif
 	if (!membase)
@@ -68,7 +68,7 @@ void *Hunk_Alloc (int size)
 	buf = VirtualAlloc (membase, cursize+size, MEM_COMMIT, PAGE_READWRITE);
 	if (!buf)
 	{
-		FormatMessage(FORMAT_MESSAGE_ALLOCATE_BUFFER | FORMAT_MESSAGE_FROM_SYSTEM, NULL, GetLastError(), MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT), (LPTSTR) &buf, 0, NULL);
+		FormatMessageA(FORMAT_MESSAGE_ALLOCATE_BUFFER | FORMAT_MESSAGE_FROM_SYSTEM, NULL, GetLastError(), MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT), (LPSTR) &buf, 0, NULL);
 		Sys_Error ("VirtualAlloc commit failed.\n%s", (char *)buf);
 	}
 #endif

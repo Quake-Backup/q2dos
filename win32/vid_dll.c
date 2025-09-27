@@ -141,8 +141,8 @@ VID_Printf (int print_level, const char *fmt, ...)
 		Com_DPrintf(DEVELOPER_MSG_GFX, "%s", msg);
 	else if ( print_level == PRINT_ALERT )
 	{
-		MessageBox( 0, msg, "PRINT_ALERT", MB_ICONWARNING );
-		OutputDebugString( msg );
+		MessageBoxA( NULL, msg, "PRINT_ALERT", MB_ICONWARNING );
+		OutputDebugStringA( msg );
 	}
 }
 
@@ -590,7 +590,7 @@ qboolean VID_LoadRefresh( char *name )
 	Com_Printf( "------- Loading %s -------\n", name );
 
 #ifndef REF_HARD_LINKED
-	if ((reflib_library = LoadLibrary(name)) == NULL)
+	if ((reflib_library = LoadLibraryA(name)) == NULL)
 	{
 		Com_Printf( "LoadLibrary(\"%s\") failed\n", name );
 		return false;

@@ -3047,11 +3047,11 @@ qboolean QGL_Init(const char *dllname)
 		_putenv(envbuffer);
 	}
 
-	if ((glw_state.hinstOpenGL = LoadLibrary(dllname)) == NULL)
+	if ((glw_state.hinstOpenGL = LoadLibraryA(dllname)) == NULL)
 	{
 		char *buf = NULL;
 
-		FormatMessage(FORMAT_MESSAGE_ALLOCATE_BUFFER | FORMAT_MESSAGE_FROM_SYSTEM, NULL, GetLastError(), MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT), (LPTSTR) &buf, 0, NULL);
+		FormatMessageA(FORMAT_MESSAGE_ALLOCATE_BUFFER | FORMAT_MESSAGE_FROM_SYSTEM, NULL, GetLastError(), MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT), (LPSTR) &buf, 0, NULL);
 		ri.Con_Printf(PRINT_ALL, "%s\n", buf);
 		return false;
 	}

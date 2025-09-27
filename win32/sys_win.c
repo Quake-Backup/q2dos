@@ -77,7 +77,7 @@ void Sys_Error (const char *error, ...)
 	va_end (argptr);
 	text[sizeof(text)-1] = 0;
 
-	MessageBox(NULL, text, "Error", 0 /* MB_OK */);
+	MessageBoxA(NULL, text, "Error", 0 /* MB_OK */);
 
 	exit (1);
 }
@@ -110,18 +110,18 @@ void WinError (void)
 {
 	LPVOID lpMsgBuf;
 
-	FormatMessage(
+	FormatMessageA(
 		FORMAT_MESSAGE_ALLOCATE_BUFFER | FORMAT_MESSAGE_FROM_SYSTEM,
 		NULL,
 		GetLastError(),
 		MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT), // Default language
-		(LPTSTR) &lpMsgBuf,
+		(LPSTR) &lpMsgBuf,
 		0,
 		NULL
 	);
 
 	// Display the string.
-	MessageBox(NULL, (const char *)lpMsgBuf, "GetLastError", MB_OK|MB_ICONINFORMATION);
+	MessageBoxA(NULL, (const char *)lpMsgBuf, "GetLastError", MB_OK|MB_ICONINFORMATION);
 
 	// Free the buffer.
 	LocalFree(lpMsgBuf);
@@ -165,7 +165,7 @@ char *Sys_ScanForCD (void)
 		if (f)
 		{
 			fclose (f);
-			if (GetDriveType (drive) == DRIVE_CDROM)
+			if (GetDriveTypeA(drive) == DRIVE_CDROM)
 				return cddir;
 		}
 	}
@@ -508,7 +508,7 @@ void *Sys_GetGameAPI (void *parms)
 	// check the current debug directory first for development purposes
 	_getcwd (cwd, sizeof(cwd));
 	Com_sprintf (name, sizeof(name), "%s/%s/%s", cwd, debugdir, gamename);
-	game_library = LoadLibrary ( name );
+	game_library = LoadLibraryA(name);
 	if (game_library)
 	{
 		Com_DPrintf(DEVELOPER_MSG_STANDARD, "LoadLibrary (%s)\n", name);
@@ -517,7 +517,7 @@ void *Sys_GetGameAPI (void *parms)
 	{
 		// check the current directory for other development purposes
 		Com_sprintf (name, sizeof(name), "%s/%s", cwd, gamename);
-		game_library = LoadLibrary ( name );
+		game_library = LoadLibraryA(name);
 		if (game_library)
 		{
 			Com_DPrintf(DEVELOPER_MSG_STANDARD, "LoadLibrary (%s)\n", name);
@@ -532,7 +532,7 @@ void *Sys_GetGameAPI (void *parms)
 				if (!path)
 					return NULL;		// couldn't find one anywhere
 				Com_sprintf (name, sizeof(name), "%s/%s", path, gamename);
-				game_library = LoadLibrary (name);
+				game_library = LoadLibraryA(name);
 				if (game_library)
 				{
 					Com_DPrintf(DEVELOPER_MSG_STANDARD, "LoadLibrary (%s)\n",name);
@@ -606,7 +606,7 @@ static void Sys_SetHighDPIMode(void)
 	/* Win8.1 and later */
 	HRESULT(WINAPI *SetProcessDpiAwareness)(Q2_PROCESS_DPI_AWARENESS dpiAwareness) = NULL;
 
-	userDLL = LoadLibrary("USER32.DLL");
+	userDLL = LoadLibraryA("USER32.DLL");
 
 	if (userDLL)
 	{
@@ -615,7 +615,7 @@ static void Sys_SetHighDPIMode(void)
 	}
 
 
-	shcoreDLL = LoadLibrary("SHCORE.DLL");
+	shcoreDLL = LoadLibraryA("SHCORE.DLL");
 
 	if (shcoreDLL)
 	{
@@ -834,7 +834,7 @@ void *Sys_GetGameSpyAPI(void *parms)
 
 	Com_Printf("------- Loading %s -------\n", dllname);
 
-	if ((gamespy_library = LoadLibrary(dllname)) == NULL)
+	if ((gamespy_library = LoadLibraryA(dllname)) == NULL)
 	{
 		Com_Printf( "LoadLibrary(\"%s\") failed\n", dllname);
 		return NULL;
