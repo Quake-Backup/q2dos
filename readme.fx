@@ -67,7 +67,7 @@
   Some drivers do not support 15bpp.
 * gl_dosdriver to have multiple GL DXEs co-existing.  Can be useful for
   testing out performance of Mesa vs Sage or between Mesa versions.  Can be
-  used at startup i.e. "+set gl_dosddriver glsage.dxe".  Defaults to gl.dxe
+  used at startup i.e. "+set gl_dosdriver glsage.dxe".  Defaults to gl.dxe
   and changes applied to video menu will revert back to gl.dxe.  Similar to
   gl_driver in Windows.
 * FX_GLIDE_2PPC controls the 2 Pixels Per Clock mode.  Valid only for
